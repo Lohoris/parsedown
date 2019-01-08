@@ -1,19 +1,20 @@
 <?php
 
-#
-#
-# Parsedown
-# http://parsedown.org
-#
-# (c) Emanuil Rusev
-# http://erusev.com
-#
-# For the full license information, view the LICENSE file that was distributed
-# with this source code.
-#
-#
+/*
 
-class Parsedown
+Parsedown – http://parsedown.org
+
+(c) Emanuil Rusev – http://erusev.com
+
+Minor modifications by:
+Lorenzo Petrone "Lohoris" – https://lohoris.net
+
+For the full license information, view the LICENSE file that was distributed
+with this source code.
+
+*/
+
+class ParsedownTG
 {
     # ~
 
