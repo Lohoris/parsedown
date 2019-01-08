@@ -1096,11 +1096,11 @@ class ParsedownTG
     protected $InlineTypes = array(
         '!' => array('Image'),
         '&' => array('SpecialCharacter'),
-        '*' => array('Emphasis'),
+        '*' => array('Bold'),
         ':' => array('Url'),
         '<' => array('UrlTag', 'EmailTag', 'Markup'),
         '[' => array('Link'),
-        '_' => array('Emphasis'),
+        '_' => array('Italic'),
         '`' => array('Code'),
         '~' => array('Strikethrough'),
         '\\' => array('EscapeSequence'),
@@ -1291,20 +1291,46 @@ class ParsedownTG
         }
     }
 
-    protected function inlineEmphasis($Excerpt)
+    protected function inlineBold ($Excerpt)
     {
-        if ( ! isset($Excerpt['text'][1]))
+        if ( !isset($Excerpt['text'][1]) )
         {
             return;
         }
-
+		
         $marker = $Excerpt['text'][0];
-
+		
         if ($Excerpt['text'][1] === $marker and preg_match($this->StrongRegex[$marker], $Excerpt['text'], $matches))
         {
             $emphasis = 'strong';
         }
-        elseif (preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches))
+        else
+        {
+            return;
+        }
+		
+        return array(
+            'extent' => strlen($matches[0]),
+            'element' => array(
+                'name' => $emphasis,
+                'handler' => array(
+                    'function' => 'lineElements',
+                    'argument' => $matches[1],
+                    'destination' => 'elements',
+                )
+            ),
+        );
+    }
+    protected function inlineItalic ($Excerpt)
+    {
+        if ( !isset($Excerpt['text'][1]) )
+        {
+            return;
+        }
+		
+        $marker = $Excerpt['text'][0];
+		
+        if (preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches))
         {
             $emphasis = 'em';
         }
@@ -1312,7 +1338,7 @@ class ParsedownTG
         {
             return;
         }
-
+		
         return array(
             'extent' => strlen($matches[0]),
             'element' => array(
@@ -1952,13 +1978,13 @@ class ParsedownTG
     );
 
     protected $StrongRegex = array(
+        //'*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
         '*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*+[*])+?)[*]{2}(?![*])/s',
-        '_' => '/^__((?:\\\\_|[^_]|_[^_]*+_)+?)__(?!_)/us',
     );
 
     protected $EmRegex = array(
-        '*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
-        '_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
+        //'_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
+        '_' => '/^__((?:\\\\_|[^_]|_[^_]*+_)+?)__(?!_)/us',
     );
 
     protected $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*+(?:\s*+=\s*+(?:[^"\'=<>`\s]+|"[^"]*+"|\'[^\']*+\'))?+';
